@@ -1,0 +1,626 @@
+{
+  "studio": {
+    "name": "Starless Studios",
+    "tagline": "Systems and tools for Roblox, built to be dropped in and forgotten about.",
+    "links": {
+      "builtbybit": "https://builtbybit.com/members/your-id/",
+      "tiktok": "https://tiktok.com/@starlessstudios",
+      "youtube": "https://youtube.com/@starlessstudios"
+    }
+  },
+  "projects": [
+    {
+      "id": "camera-system",
+      "name": "Camera System",
+      "status": "Available",
+      "tagline": "A modular smooth camera system with built-in customizeable shift, cutscenes and lock-in.",
+      "tags": [
+        "Camera",
+        "Roblox",
+        "Animation",
+        "Systems"
+      ],
+      "cover": "",
+      "updatedAt": "August 2026",
+      "links": [],
+      "wiki": [
+        {
+          "id": "overview",
+          "title": "Overview",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "A premium, fully customizable camera system built to make your game feel smoother, more polished, and way more immersive. Designed with flexibility in mind, it gives you everything you need to create a cinematic player experience without fighting clunky camera code."
+            },
+            {
+              "type": "text",
+              "value": "It includes smooth follow and interpolation for fluid movement, dynamic FOV effects for speed and intensity, wind and shake effects for extra impact, and a custom first-person mode that feels clean and responsive. You also get custom shift lock, target lock-on, full cutscene support, and auto-adjustable zoom for a seamless experience across different gameplay styles."
+            },
+            {
+              "type": "text",
+              "value": "Whether you are making a fast-paced action game, a story-driven experience, or a polished simulator, this system adapts to your needs. It is extremely customizable, easy to fit into different projects, and built with multi-platform support so it works naturally on PC, mobile, and console."
+            },
+            {
+              "type": "text",
+              "value": "If you want a camera system that adds real quality, improves immersion, and gives your game a professional feel out of the box, this is the kind of upgrade players notice immediately."
+            }
+          ]
+        },
+        {
+          "id": "installation",
+          "title": "Installation",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Setting up the camera system only takes a few steps:"
+            },
+            {
+              "type": "list",
+              "items": [
+                "Import the provided .rbxm model into your place.",
+                "Move the CameraSystem folder into ReplicatedStorage.",
+                "Create a new LocalScript inside StarterPlayer &gt; StarterPlayerScripts.",
+                "Paste the following code into the LocalScript:"
+              ],
+              "ordered": true
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "StarterPlayerScripts/CameraBoot.client.lua",
+              "value": "local CameraInitializer = require(game.ReplicatedStorage.CameraSystem.CameraInitializer)\n\nCameraInitializer.init()"
+            },
+            {
+              "type": "text",
+              "value": "That&#39;s it! The camera system will automatically initialize when the player joins the game."
+            }
+          ]
+        },
+        {
+          "id": "smooth-follow-interpolation",
+          "title": "Smooth Follow & Interpolation",
+          "blocks": [
+            {
+              "type": "video",
+              "url": "",
+              "sourceRef": "smoothFollowShowcase",
+              "caption": "Smoothly interpolates camera movement and rotation for responsive, natural-looking motion."
+            }
+          ]
+        },
+        {
+          "id": "cutscene-system",
+          "title": "Cutscene System",
+          "blocks": [
+            {
+              "type": "video",
+              "url": "",
+              "sourceRef": "cutsceneShowcase",
+              "caption": "Create cinematic cutscenes with keyframes, camera filters, and seamless transitions."
+            }
+          ]
+        },
+        {
+          "id": "custom-shift-lock",
+          "title": "Custom Shift Lock",
+          "blocks": [
+            {
+              "type": "video",
+              "url": "",
+              "sourceRef": "shiftLockShowcase",
+              "caption": "A fully customizable shift lock with smooth transitions and configurable behavior."
+            }
+          ]
+        },
+        {
+          "id": "custom-first-person",
+          "title": "Custom First Person",
+          "blocks": [
+            {
+              "type": "video",
+              "url": "",
+              "sourceRef": "firstPersonShowcase",
+              "caption": "An immersive first-person mode with customizable camera positioning and controls."
+            }
+          ]
+        },
+        {
+          "id": "target-lock",
+          "title": "Target Lock",
+          "blocks": [
+            {
+              "type": "video",
+              "url": "",
+              "sourceRef": "lockInShowcase",
+              "caption": "Lock onto targets with smooth tracking and effortless target switching."
+            }
+          ]
+        },
+        {
+          "id": "adaptive-zoom",
+          "title": "Adaptive Zoom",
+          "blocks": [
+            {
+              "type": "video",
+              "url": "",
+              "sourceRef": "closedAmbientShowcase",
+              "caption": "Automatically adjusts camera zoom in tight spaces to prevent clipping and improve visibility."
+            }
+          ]
+        },
+        {
+          "id": "wind-effect",
+          "title": "Wind Effect",
+          "blocks": [
+            {
+              "type": "video",
+              "url": "",
+              "sourceRef": "windEffectShowcase",
+              "caption": "Adds subtle camera movement to simulate wind and enhance environmental immersion."
+            }
+          ]
+        },
+        {
+          "id": "multi-platform-support",
+          "title": "Multi-Platform Support",
+          "blocks": [
+            {
+              "type": "video",
+              "url": "",
+              "sourceRef": "mobileShowcase",
+              "caption": "Built for desktop, mobile, console, and gamepad with platform-specific controls."
+            }
+          ]
+        },
+        {
+          "id": "shake-effect",
+          "title": "Shake Effect",
+          "blocks": [
+            {
+              "type": "video",
+              "url": "",
+              "sourceRef": "shakeShowcase",
+              "caption": "Create dynamic camera shakes for impacts, explosions, and other gameplay events."
+            }
+          ]
+        },
+        {
+          "id": "configuration-core",
+          "title": "Configuration — Core & controls",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Usage guide for the CamConfig module."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<code>Enabled</code> — Master switch for the entire camera system. When false, all custom camera behavior is disabled.",
+                "<code>DefaultCrosshair</code> — The image asset used for the default crosshair in normal camera mode.",
+                "<code>DefaultCrosshairSize</code> — The size of the default crosshair in pixels.",
+                "<code>DefaultCrossHairTransparency</code> — The transparency of the default crosshair.",
+                "<code>DefaultCamMaxDistance</code> — The maximum distance the default camera can stay from the character.",
+                "<code>CamFollowSpeed</code> — Controls how quickly the camera follows the character movement.",
+                "<code>MinZoom</code> — The minimum allowed zoom distance.",
+                "<code>MaxZoom</code> — The maximum allowed zoom distance.",
+                "<code>DefaultOffset</code> — The default camera offset relative to the character.",
+                "<code>DefaultCamMode</code> — The default camera mode used when the system starts. Common values are free or locked.",
+                "<code>DefaultCameraRotationMode</code> — Defines how camera rotation behaves by default. Common values are default, disabled, or follow.",
+                "<code>RotationSensibility</code> — The sensitivity of camera rotation input.",
+                "<code>ManualZoom</code> — Enables or disables manual zoom input.",
+                "<code>ZoomSensibility</code> — Controls how fast zoom changes when the player zooms in or out.",
+                "<code>ControlZoomIn</code> — The controller key used to zoom in.",
+                "<code>ControlZoomOut</code> — The controller key used to zoom out.",
+                "<code>PlayerMovementRotationEnabled</code> — Enables character rotation based on movement.",
+                "<code>PlayerMovementRotationLeftRight</code> — Rotation influence applied when the player moves left or right.",
+                "<code>PlayerMovementRotationFrontBack</code> — Rotation influence applied when the player moves forward or backward.",
+                "<code>RotatePlayerWhenPressingButtons</code> — A list of keys that manually rotate the player."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "configuration-effects",
+          "title": "Configuration — Effects & FOV",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "<code>FOVEffectContext</code> — Determines where the FOV effect applies. Common values are first person, third person, none, or both.",
+                "<code>CameraRollContext</code> — Determines where camera roll effects apply.",
+                "<code>CameraRollAmount</code> — The maximum amount of roll applied to the camera.",
+                "<code>WindEffectContext</code> — Determines where wind effects apply.",
+                "<code>WindEffectMinSpeed</code> — The minimum speed required before wind effects start.",
+                "<code>WindEffectIntensityFactor</code> — A multiplier that controls how strong the wind effect is.",
+                "<code>AdaptativeZoomOnClosedAmbient</code> — Enables automatic zoom adjustment when the player is in a tight or closed space.",
+                "<code>AdaptativeZoomOnClosedAmbientIntensity</code> — Controls how strong the adaptive zoom effect becomes in closed spaces.",
+                "<code>AdjustZoomBasedOnVehicle</code> — Automatically adjusts zoom when the player is inside a vehicle.",
+                "<code>DefaultFOV</code> — The default field of view used by the camera.",
+                "<code>FirstPersonDefaultFOV</code> — The field of view used in first person mode.",
+                "<code>SpeedFOVModifierFactor</code> — How much player movement speed influences the FOV.",
+                "<code>MaxCameraFOV</code> — The maximum allowed field of view."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "configuration-shift-lock",
+          "title": "Configuration — Shift Lock",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "<code>CustomShiftLock</code> — Enables the custom shift lock system.",
+                "<code>ShiftLockCamMaxDistance</code> — The maximum camera distance while shift lock is active.",
+                "<code>ShiftLockMobileButton</code> — The mobile button used to toggle shift lock.",
+                "<code>ShiftLockButtons</code> — The keys or buttons used to toggle shift lock.",
+                "<code>ShiftLockCrosshair</code> — The image asset used for the shift lock crosshair.",
+                "<code>ShiftLockCrossHairSize</code> — The size of the shift lock crosshair in pixels.",
+                "<code>ShiftLockCrossHairTransparency</code> — The transparency of the shift lock crosshair.",
+                "<code>ShiftLockOffset</code> — The camera offset used while shift lock is active."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "configuration-first-person",
+          "title": "Configuration — First Person",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "<code>CustomFirstPerson</code> — Enables the custom first person system.",
+                "<code>FirstPersonButtons</code> — The keys used to toggle first person mode.",
+                "<code>FirstPersonMobileButton</code> — The mobile button used to toggle first person mode.",
+                "<code>FirstPersonMode</code> — Defines how first person can be activated. Common values are disabled, key, zoom, or both.",
+                "<code>FirstPersonCrosshair</code> — The image asset used for the first person crosshair.",
+                "<code>FirstPersonCrosshairSize</code> — The size of the first person crosshair in pixels.",
+                "<code>FirstPersonCrosshairTransparency</code> — The transparency of the first person crosshair.",
+                "<code>ShowBodyFirstPerson</code> — Makes the character body visible while in first person."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "configuration-target-lock",
+          "title": "Configuration — Target Lock",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "<code>CustomLockIn</code> — Enables the target lock-in system.",
+                "<code>LockInButtons</code> — The inputs used to activate lock-in.",
+                "<code>LockInMobileButton</code> — The mobile button used to activate lock-in.",
+                "<code>LockInCamMaxDistance</code> — The maximum camera distance while locked onto a target.",
+                "<code>LockInIconSize</code> — The size of the lock-in icon.",
+                "<code>AdjustZoomBasedOnTarget</code> — Automatically adjusts zoom depending on the target’s size.",
+                "<code>LockInIconTransparency</code> — The transparency of the lock-in icon.",
+                "<code>LockInIcon</code> — The image asset used for the lock-in icon.",
+                "<code>LockInSpin</code> — Makes the lock-in icon spin while a target is locked.",
+                "<code>LockInPump</code> — Makes the lock-in icon pulse with a scaling animation.",
+                "<code>LockInSpinSpeed</code> — The speed of the lock-in spin animation.",
+                "<code>LockInPumpSpeed</code> — The speed of the lock-in pulsing animation.",
+                "<code>LockInHighlight</code> — Highlights the locked target.",
+                "<code>LockInHighlightColor</code> — The highlight color applied to the locked target.",
+                "<code>LockInOffset</code> — The camera offset used while locked onto a target.",
+                "<code>DragToChangeTarget</code> — Allows the player to drag to switch between targets while lock-in is active."
+              ]
+            },
+            {
+              "type": "text",
+              "value": "Every option is fully customizable, so you can tune the camera system for cinematic, competitive, realistic, or arcade-style gameplay."
+            }
+          ]
+        },
+        {
+          "id": "camera-shake",
+          "title": "API — Camera Shake",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "The camera system is designed to be fully modular. You can use individual features independently or combine them to create more immersive gameplay."
+            },
+            {
+              "type": "text",
+              "value": "Add dynamic camera shake for explosions, impacts, earthquakes, weapon recoil, or any other event. The shake system uses smooth interpolation instead of instantly changing the camera offset, producing natural-looking movement. Intensity controls the maximum displacement, Duration controls how long the shake lasts, and Frequency controls how quickly the shake changes direction."
+            },
+            {
+              "type": "text",
+              "value": "<strong>Example:</strong>"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "value": "CustomCameraState.shake(1.5, 0.4, 8)"
+            }
+          ]
+        },
+        {
+          "id": "camera-filters",
+          "title": "API — Camera Filters",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Camera filters let you temporarily modify the game&#39;s visual appearance during gameplay or cutscenes. Each filter can control:"
+            },
+            {
+              "type": "list",
+              "items": [
+                "Brightness",
+                "Contrast",
+                "Saturation",
+                "Tint Color",
+                "Atmospheric Haze Color",
+                "Atmospheric Haze Density"
+              ]
+            },
+            {
+              "type": "text",
+              "value": "Filters are tweened automatically, allowing smooth transitions between effects. You can also create your own filters using CameraFilter.new()."
+            },
+            {
+              "type": "text",
+              "value": "<strong>Example:</strong>"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "value": "local filter = CameraFilter.new(\n    0.2,\n    0.4,\n    -0.2,\n    Color3.fromRGB(255,220,220),\n    Color3.fromRGB(255,170,120),\n    0.35\n)\n\nfilter:apply(TweenInfo.new(1))\n\n-- Remove the filter later\nfilter:remove(TweenInfo.new(1))"
+            }
+          ]
+        },
+        {
+          "id": "keyframes",
+          "title": "API — Keyframes",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Camera keyframes define the path, rotation, FOV, and timing of a cutscene. Each keyframe stores three values:"
+            },
+            {
+              "type": "list",
+              "items": [
+                "<code>cframe</code>: The camera position and orientation.",
+                "<code>fov</code>: The field of view at that moment.",
+                "<code>time</code>: The timestamp used to place the keyframe in the cutscene timeline."
+              ]
+            },
+            {
+              "type": "heading",
+              "value": "Creating Keyframes"
+            },
+            {
+              "type": "text",
+              "value": "You can create keyframes in four different ways depending on how much control you need:"
+            },
+            {
+              "type": "heading",
+              "value": "1. CameraKeyframe.new(cframe, fov, time)"
+            },
+            {
+              "type": "text",
+              "value": "Use this when you already have a full CFrame prepared. This is the most direct constructor and gives you full control over both position and rotation."
+            },
+            {
+              "type": "text",
+              "value": "<strong>Example:</strong>"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "value": "local keyframe = CameraKeyframe.new(\n    CFrame.new(0, 10, 20) * CFrame.Angles(0, math.rad(180), 0),\n    70,\n    1.5\n)"
+            },
+            {
+              "type": "heading",
+              "value": "2. CameraKeyframe.fromPos(pos, fov, time)"
+            },
+            {
+              "type": "text",
+              "value": "Use this when you only want to place the camera at a position and do not need custom rotation. This creates a CFrame from the position only."
+            },
+            {
+              "type": "text",
+              "value": "<strong>Example:</strong>"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "value": "local keyframe = CameraKeyframe.fromPos(Vector3.new(0, 10, 20), 70, 1.5)"
+            },
+            {
+              "type": "heading",
+              "value": "3. CameraKeyframe.fromPosAndRotation(pos, rotation, fov, time)"
+            },
+            {
+              "type": "text",
+              "value": "Use this when you want to define the camera position and a custom orientation manually. The rotation value is a Vector3 of Euler angles, using X, Y, and Z rotation values."
+            },
+            {
+              "type": "text",
+              "value": "<strong>Example:</strong>"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "value": "local keyframe = CameraKeyframe.fromPosAndRotation(\n    Vector3.new(0, 10, 20),\n    Vector3.new(0, math.rad(180), 0),\n    70,\n    1.5\n)"
+            },
+            {
+              "type": "heading",
+              "value": "4. CameraKeyframe.fromPosAndTargetPos(pos, targetpos, fov, time)"
+            },
+            {
+              "type": "text",
+              "value": "Use this when you want the camera to automatically face a specific point. The camera will look from pos toward targetpos, which is very useful for cinematic shots, dialogue scenes, and reveals."
+            },
+            {
+              "type": "text",
+              "value": "<strong>Example:</strong>"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "value": "local keyframe = CameraKeyframe.fromPosAndTargetPos(\n    Vector3.new(0, 10, 20),\n    Vector3.new(0, 5, 0),\n    70,\n    1.5\n)"
+            }
+          ]
+        },
+        {
+          "id": "cutscenes",
+          "title": "API — Cutscenes",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "CameraCutscene is the main class responsible for playing cinematic camera sequences. It combines camera keyframes with optional features such as interpolation, target tracking, relative positioning, collision handling, visual filters, and cinematic UI."
+            },
+            {
+              "type": "text",
+              "value": "<strong>Constructor:</strong>"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "value": "CameraCutscene.new(\n    keyframes,\n    playMode,\n    cutsceneUI,\n    canPlayerMove,\n    cameraFilter,\n    target,\n    reference,\n    referenceRaycast,\n    targetRaycast\n)"
+            },
+            {
+              "type": "heading",
+              "value": "<code>keyframes</code>"
+            },
+            {
+              "type": "text",
+              "value": "A table containing every CameraKeyframe that makes up the cutscene. The keyframes should be ordered by time, starting at 0 and increasing until the final shot."
+            },
+            {
+              "type": "heading",
+              "value": "<code>playMode</code>"
+            },
+            {
+              "type": "text",
+              "value": "Determines how the camera moves between keyframes."
+            },
+            {
+              "type": "list",
+              "items": [
+                "None - Instantly switches between keyframes with no interpolation.",
+                "Linear - Smoothly interpolates between each keyframe using linear interpolation.",
+                "Catmull - Uses Catmull-Rom spline interpolation to generate smooth cinematic camera paths. This is the recommended mode for most cutscenes."
+              ]
+            },
+            {
+              "type": "heading",
+              "value": "<code>cutsceneUI</code>"
+            },
+            {
+              "type": "text",
+              "value": "Enables the built-in cinematic UI. When enabled, cinematic bars and the cutscene interface automatically appear when the cutscene starts and disappear when it ends. Disable this if you want to create your own UI or use the camera system without any cinematic overlay."
+            },
+            {
+              "type": "heading",
+              "value": "<code>canPlayerMove</code>"
+            },
+            {
+              "type": "text",
+              "value": "Controls whether the player can move during the cutscene. If false, the player&#39;s WalkSpeed is temporarily set to 0 while the cutscene plays and restored afterward. This is ideal for story moments, intros, or scripted events. If true, the player can continue moving normally while the camera is controlled by the cutscene."
+            },
+            {
+              "type": "heading",
+              "value": "<code>cameraFilter</code>"
+            },
+            {
+              "type": "text",
+              "value": "An optional CameraFilter applied automatically when the cutscene begins. Filters can modify brightness, contrast, saturation, tint color, atmospheric haze, and more. Pass nil if you don&#39;t want any visual filter."
+            },
+            {
+              "type": "heading",
+              "value": "<code>target</code>"
+            },
+            {
+              "type": "text",
+              "value": "An optional Model or BasePart that the camera should continuously look at. Instead of using the rotation stored inside each keyframe, the camera automatically rotates every frame to keep this object centered. This is perfect for dialogue scenes, boss introductions, NPC interactions, or showcasing moving objects."
+            },
+            {
+              "type": "heading",
+              "value": "<code>reference</code>"
+            },
+            {
+              "type": "text",
+              "value": "An optional Model or BasePart used as the origin of the cutscene. Every keyframe becomes relative to this object instead of world space. This allows the exact same cutscene to be reused anywhere simply by changing the reference object. For example, you can create a vehicle intro once and reuse it for every vehicle by passing a different vehicle model as the reference."
+            },
+            {
+              "type": "heading",
+              "value": "<code>referenceRaycast</code>"
+            },
+            {
+              "type": "text",
+              "value": "Enables collision detection between the reference object and the camera. If a wall blocks the camera, it automatically moves closer instead of clipping through the geometry. Only affects cutscenes using a reference object."
+            },
+            {
+              "type": "heading",
+              "value": "<code>targetRaycast</code>"
+            },
+            {
+              "type": "text",
+              "value": "Enables collision detection between the target object and the camera. The system raycasts from the target toward the desired camera position and automatically adjusts the camera if an obstacle is found. This is especially useful when the target is moving through buildings, caves, or other enclosed environments."
+            },
+            {
+              "type": "heading",
+              "value": "Example"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "value": "local cutscene = CameraCutscene.new(\n    keyframes,\n    \"Catmull\",\n    true,\n    false,\n    CameraFilter.BlackAndWhite,\n    boss,\n    arena,\n    true,\n    true\n)\nCustomCameraState.setCutsceneAndPlay(cutscene, TweenInfo.new(1))"
+            },
+            {
+              "type": "text",
+              "value": "You can also provide TweenInfo when starting or stopping a cutscene to smoothly transition between gameplay and the cinematic camera. "
+            },
+            {
+              "type": "text",
+              "value": "<strong>Useful CameraState functions:</strong>"
+            },
+            {
+              "type": "list",
+              "items": [
+                "<code>setCutsceneAndPlay(cutscene, transition)</code> — Starts a cutscene immediately.",
+                "<code>setCutsceneAndPlayAndStop(cutscene, startTransition, endTransition)</code> — Automatically plays and removes the cutscene when it finishes.",
+                "<code>stopCutscene(transition)</code> — Stops the current cutscene while preserving it.",
+                "<code>removeCutscene(transition)</code> — Stops and completely removes the active cutscene.",
+                "<code>resetCutscene()</code> — Resets the cutscene back to its first keyframe.",
+                "<code>isCutsceneActive()</code> — Returns whether a cutscene is currently assigned."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "uiforge",
+      "name": "UIForge",
+      "status": "In progress",
+      "tagline": "A Figma-style interface editor — canvas, layers and components — built in React and TypeScript.",
+      "tags": [
+        "TypeScript",
+        "React",
+        "Tooling"
+      ],
+      "cover": "",
+      "links": [],
+      "wiki": [
+        {
+          "id": "about",
+          "title": "About",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "UIForge is an editor for building interfaces on a canvas: drag, snap, nest, and read the result back out as structured data."
+            },
+            {
+              "type": "note",
+              "title": "Status",
+              "value": "Early. The canvas and layer tree work; components and export are next."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
