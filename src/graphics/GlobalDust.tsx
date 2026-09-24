@@ -99,7 +99,6 @@ export default function GlobalDust() {
       geometry.dispose();
       material.dispose();
       renderer.dispose();
-      renderer.forceContextLoss();
     };
   }, []);
 

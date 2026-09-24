@@ -207,7 +207,6 @@ export default function DeadStar() {
       ringGeometry.dispose();
       ringMaterial.dispose();
       renderer.dispose();
-      renderer.forceContextLoss();
     };
   }, []);
 
