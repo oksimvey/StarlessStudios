@@ -1,11 +1,12 @@
-import type { Studio } from '../types/site';
+import type { ProjectCollection, Studio } from '../types/site';
 import StudioMark from './StudioMark';
 
 interface HeaderProps {
   studio: Studio;
+  collections: ProjectCollection[];
 }
 
-export default function Header({ studio }: HeaderProps) {
+export default function Header({ studio, collections }: HeaderProps) {
   const { builtbybit, youtube, tiktok } = studio.links;
 
   return (
@@ -17,9 +18,11 @@ export default function Header({ studio }: HeaderProps) {
         </a>
 
         <nav className="nav" aria-label="Main navigation">
-          <a href="#work">Work</a>
-          <a href="#studio">Studio</a>
-          <a href="#elsewhere">Elsewhere</a>
+          {collections.map((collection) => (
+            <a href={`#${collection.id}`} key={collection.id}>
+              {collection.eyebrow}
+            </a>
+          ))}
         </nav>
 
         <nav className="header-links" aria-label="Elsewhere">
@@ -28,8 +31,8 @@ export default function Header({ studio }: HeaderProps) {
           <a href={tiktok} target="_blank" rel="noopener noreferrer">TikTok</a>
         </nav>
 
-        <a className="cta" href={builtbybit} target="_blank" rel="noopener noreferrer">
-          Get the systems
+        <a className="cta" href="#work">
+          Explore work
         </a>
       </div>
     </header>
