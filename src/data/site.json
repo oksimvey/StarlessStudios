@@ -1,7 +1,7 @@
 {
   "studio": {
     "name": "Starless Studios",
-    "tagline": "Systems and tools for Roblox, built to be dropped in and forgotten about.",
+    "tagline": "Websites, Roblox systems, and software products built to feel deliberate.",
     "links": {
       "builtbybit": "https://builtbybit.com/creators/starless-studios.884157/",
       "tiktok": "https://tiktok.com/@starlessstudios",
@@ -590,7 +590,8 @@
             }
           ]
         }
-      ]
+      ],
+      "category": "roblox"
     },
     {
       "id": "uiforge",
@@ -620,7 +621,28 @@
             }
           ]
         }
-      ]
+      ],
+      "category": "products"
+    }
+  ],
+  "collections": [
+    {
+      "id": "websites",
+      "eyebrow": "Web",
+      "title": "Websites & Templates",
+      "description": "Websites, landing pages, storefronts, and reusable templates built with a strong visual identity."
+    },
+    {
+      "id": "roblox",
+      "eyebrow": "Roblox",
+      "title": "Roblox Studio Projects",
+      "description": "Systems, templates, and developer tooling for Roblox Studio, with proper documentation where it matters."
+    },
+    {
+      "id": "products",
+      "eyebrow": "Apps / SaaS",
+      "title": "Products & Experiments",
+      "description": "Original SaaS products, apps, developer tools, and experiments built inside Starless."
     }
   ]
 }
