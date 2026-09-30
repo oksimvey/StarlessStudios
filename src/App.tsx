@@ -15,7 +15,7 @@ function getHash() {
   return window.location.hash;
 }
 
-/** Keeps the original #/p/project-id links and native #work/#studio anchors. */
+/** Keeps the original #/p/project-id links and native section anchors. */
 export default function App() {
   const hash = useSyncExternalStore(subscribeToHash, getHash, () => '#/');
   const match = /^#\/p\/([\w-]+)(?:\/([\w-]+))?$/.exec(hash);
@@ -35,19 +35,29 @@ export default function App() {
         window.scrollTo(0, 0);
         return;
       }
-      if (/^#(?:work|studio|elsewhere)$/.test(hash)) {
-        document.getElementById(hash.slice(1))?.scrollIntoView();
+
+      const anchor = hash.startsWith('#') ? hash.slice(1) : '';
+      const homeAnchors = new Set([
+        'work',
+        ...siteData.collections.map((collection) => collection.id),
+        'studio',
+        'elsewhere',
+      ]);
+
+      if (homeAnchors.has(anchor)) {
+        document.getElementById(anchor)?.scrollIntoView();
       } else {
         window.scrollTo(0, 0);
       }
     });
+
     return () => cancelAnimationFrame(frame);
   }, [hash, project, sectionId]);
 
   return (
     <>
       <GlobalDust />
-      <Header studio={siteData.studio} />
+      <Header studio={siteData.studio} collections={siteData.collections} />
       <main>
         {project ? <Wiki project={project} /> : <Home data={siteData} />}
       </main>
