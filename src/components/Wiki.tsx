@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Project } from '../types/site';
+import { marketplaceLinks } from '../data/marketplace';
+import '../styles/wiki-marketplace.css';
 import WikiBlock from './WikiBlock';
 
 interface WikiProps {
@@ -8,6 +10,7 @@ interface WikiProps {
 
 export default function Wiki({ project }: WikiProps) {
   const [activeSection, setActiveSection] = useState(project.wiki[0]?.id ?? '');
+  const marketplace = marketplaceLinks[project.id];
 
   useEffect(() => {
     setActiveSection(project.wiki[0]?.id ?? '');
@@ -50,6 +53,23 @@ export default function Wiki({ project }: WikiProps) {
           </a>
         ))}
       </div>
+
+      {marketplace && (
+        <a
+          className="marketplace-card"
+          href={marketplace.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${marketplace.action}: ${marketplace.title}`}
+        >
+          <span className="marketplace-card-copy">
+            <span className="marketplace-card-kicker">Available on {marketplace.platform}</span>
+            <strong>{marketplace.title}</strong>
+            <p>{marketplace.description}</p>
+          </span>
+          <span className="marketplace-card-action">{marketplace.action}</span>
+        </a>
+      )}
 
       <div className="wiki-body">
         <nav className="toc" aria-label="Sections">
