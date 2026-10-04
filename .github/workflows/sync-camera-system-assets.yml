@@ -1,0 +1,78 @@
+name: Sync Camera System assets
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/sync-camera-system-assets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-camera-system-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Starless Studios
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch Camera System media from RS Studio Projects Wiki
+        run: |
+          rm -rf /tmp/rs-studio-projects-wiki
+          git clone --depth 1 https://github.com/oksimvey/RS-Studio-Projects-Wiki.git /tmp/rs-studio-projects-wiki
+
+          mkdir -p public/assets/camera-system
+          cp /tmp/rs-studio-projects-wiki/src/assets/camera_system/* public/assets/camera-system/
+          cp /tmp/rs-studio-projects-wiki/src/assets/camera_system.jpg public/assets/camera-system/camera_system.jpg
+
+      - name: Fix Camera System media paths
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('src/data/site.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+
+          media_by_ref = {
+              'smoothFollowShowcase': 'assets/camera-system/smooth_follow.mp4',
+              'cutsceneShowcase': 'assets/camera-system/cutscene_showcase.mp4',
+              'shiftLockShowcase': 'assets/camera-system/shift_lock.mp4',
+              'firstPersonShowcase': 'assets/camera-system/first_person.mp4',
+              'lockInShowcase': 'assets/camera-system/lock_in.mp4',
+              'closedAmbientShowcase': 'assets/camera-system/closed_ambience.mp4',
+              'windEffectShowcase': 'assets/camera-system/wind_effect.mp4',
+              'mobileShowcase': 'assets/camera-system/mobile.mp4',
+              'shakeShowcase': 'assets/camera-system/shake.mp4',
+          }
+
+          for project in data.get('projects', []):
+              if project.get('id') != 'camera-system':
+                  continue
+
+              project['cover'] = 'assets/camera-system/camera_system.jpg'
+
+              for section in project.get('wiki', []):
+                  for block in section.get('blocks', []):
+                      source_ref = block.get('sourceRef')
+                      if source_ref in media_by_ref:
+                          block['url'] = media_by_ref[source_ref]
+
+          path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          PY
+
+      - name: Commit synced assets and paths
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/assets/camera-system src/data/site.json
+
+          if git diff --cached --quiet; then
+            echo 'Camera System assets and paths are already up to date.'
+            exit 0
+          fi
+
+          git commit -m 'chore: sync Camera System media assets'
+          git push
