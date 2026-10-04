@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://oksimvey.github.io/StarlessStudios/sitemap.xml
