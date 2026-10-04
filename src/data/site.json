@@ -20,7 +20,7 @@
         "Animation",
         "Systems"
       ],
-      "cover": "",
+      "cover": "assets/camera-system/camera_system.jpg",
       "updatedAt": "August 2026",
       "links": [],
       "wiki": [
@@ -82,7 +82,7 @@
           "blocks": [
             {
               "type": "video",
-              "url": "",
+              "url": "assets/camera-system/smooth_follow.mp4",
               "sourceRef": "smoothFollowShowcase",
               "caption": "Smoothly interpolates camera movement and rotation for responsive, natural-looking motion."
             }
@@ -94,7 +94,7 @@
           "blocks": [
             {
               "type": "video",
-              "url": "",
+              "url": "assets/camera-system/cutscene_showcase.mp4",
               "sourceRef": "cutsceneShowcase",
               "caption": "Create cinematic cutscenes with keyframes, camera filters, and seamless transitions."
             }
@@ -106,7 +106,7 @@
           "blocks": [
             {
               "type": "video",
-              "url": "",
+              "url": "assets/camera-system/shift_lock.mp4",
               "sourceRef": "shiftLockShowcase",
               "caption": "A fully customizable shift lock with smooth transitions and configurable behavior."
             }
@@ -118,7 +118,7 @@
           "blocks": [
             {
               "type": "video",
-              "url": "",
+              "url": "assets/camera-system/first_person.mp4",
               "sourceRef": "firstPersonShowcase",
               "caption": "An immersive first-person mode with customizable camera positioning and controls."
             }
@@ -130,7 +130,7 @@
           "blocks": [
             {
               "type": "video",
-              "url": "",
+              "url": "assets/camera-system/lock_in.mp4",
               "sourceRef": "lockInShowcase",
               "caption": "Lock onto targets with smooth tracking and effortless target switching."
             }
@@ -142,7 +142,7 @@
           "blocks": [
             {
               "type": "video",
-              "url": "",
+              "url": "assets/camera-system/closed_ambience.mp4",
               "sourceRef": "closedAmbientShowcase",
               "caption": "Automatically adjusts camera zoom in tight spaces to prevent clipping and improve visibility."
             }
@@ -154,7 +154,7 @@
           "blocks": [
             {
               "type": "video",
-              "url": "",
+              "url": "assets/camera-system/wind_effect.mp4",
               "sourceRef": "windEffectShowcase",
               "caption": "Adds subtle camera movement to simulate wind and enhance environmental immersion."
             }
@@ -166,7 +166,7 @@
           "blocks": [
             {
               "type": "video",
-              "url": "",
+              "url": "assets/camera-system/mobile.mp4",
               "sourceRef": "mobileShowcase",
               "caption": "Built for desktop, mobile, console, and gamepad with platform-specific controls."
             }
@@ -178,7 +178,7 @@
           "blocks": [
             {
               "type": "video",
-              "url": "",
+              "url": "assets/camera-system/shake.mp4",
               "sourceRef": "shakeShowcase",
               "caption": "Create dynamic camera shakes for impacts, explosions, and other gameplay events."
             }
