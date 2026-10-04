@@ -343,6 +343,75 @@
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
+.collection-project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.collection-project-actions .project-open {
+  margin-top: 0;
+}
+
+.project-resource {
+  color: var(--grey);
+}
+
+.collection-page-roblox .collection-projects {
+  grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+  align-items: start;
+}
+
+.collection-page-roblox .collection-project {
+  max-width: 330px;
+}
+
+.collection-page-roblox .collection-project .project-visual {
+  aspect-ratio: 16 / 9;
+}
+
+.collection-page-roblox .collection-project .project-body {
+  padding: 16px 16px 18px;
+}
+
+.collection-page-roblox .collection-project h3 {
+  margin-bottom: 5px;
+  font-size: 1.05rem;
+}
+
+.collection-page-roblox .collection-project .desc {
+  font-size: .82rem;
+  line-height: 1.5;
+}
+
+.collection-page-roblox .collection-project .meta {
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.collection-page-roblox .collection-project .tag,
+.collection-page-roblox .collection-project .state {
+  font-size: .66rem;
+  padding-block: 2px;
+}
+
+.collection-page-roblox .collection-project-actions {
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.collection-page-roblox .collection-project .project-open {
+  padding: 6px 10px;
+  font-size: .72rem;
+}
+
+.collection-page-roblox .collection-project:hover .project-resource {
+  background: transparent;
+  color: var(--white);
+  border-color: var(--line-2);
+}
+
 .collection-empty {
   min-height: 330px;
 }
@@ -372,4 +441,8 @@
   .collection-work-head { align-items: start; flex-direction: column; }
   .orbit-b { width: 270px; height: 145px; }
   .orbit-a { width: 200px; height: 200px; }
+
+  .collection-page-roblox .collection-project {
+    max-width: none;
+  }
 }
