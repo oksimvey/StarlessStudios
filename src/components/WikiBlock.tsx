@@ -10,6 +10,25 @@ function InlineMarkup({ html }: { html: string }) {
   return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
+function resolveMediaUrl(url: string) {
+  if (!url) return '';
+
+  if (
+    /^(?:https?:)?\/\//i.test(url)
+    || url.startsWith('data:')
+    || url.startsWith('blob:')
+    || url.startsWith('/')
+  ) {
+    return url;
+  }
+
+  return `${import.meta.env.BASE_URL}${url.replace(/^\.\//, '')}`;
+}
+
+function isVideoFile(url: string) {
+  return /\.(?:mp4|webm|ogg)(?:[?#].*)?$/i.test(url);
+}
+
 export default function WikiBlock({ block }: WikiBlockProps) {
   switch (block.type) {
     case 'heading':
@@ -38,35 +57,63 @@ export default function WikiBlock({ block }: WikiBlockProps) {
     case 'divider':
       return <hr className="rule" />;
 
-    case 'image':
+    case 'image': {
+      const src = resolveMediaUrl(block.url);
+
       return (
         <figure>
-          {block.url ? (
-            <img src={block.url} alt={block.caption ?? ''} loading="lazy" />
+          {src ? (
+            <img src={src} alt={block.caption ?? ''} loading="lazy" />
           ) : (
             <div className="embed" aria-label="Image pending" />
           )}
-          {(block.caption || !block.url) && (
+          {(block.caption || !src) && (
             <figcaption>{block.caption || 'Image pending'}</figcaption>
           )}
         </figure>
       );
+    }
 
-    case 'video':
+    case 'video': {
+      const src = resolveMediaUrl(block.url);
+      const localVideo = isVideoFile(src);
+
       return (
         <figure>
           <div className="embed">
-            <iframe
-              src={block.url}
-              title={block.caption || 'Video'}
-              loading="lazy"
-              allowFullScreen
-              allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
-            />
+            {!src ? (
+              <div aria-label="Video pending" />
+            ) : localVideo ? (
+              <video
+                src={src}
+                controls
+                playsInline
+                preload="metadata"
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  background: '#000',
+                }}
+              />
+            ) : (
+              <iframe
+                src={src}
+                title={block.caption || 'Video'}
+                loading="lazy"
+                allowFullScreen
+                allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+              />
+            )}
           </div>
-          {block.caption && <figcaption>{block.caption}</figcaption>}
+          {(block.caption || !src) && (
+            <figcaption>{block.caption || 'Video pending'}</figcaption>
+          )}
         </figure>
       );
+    }
 
     case 'code':
       return <CodeBlock block={block} />;
