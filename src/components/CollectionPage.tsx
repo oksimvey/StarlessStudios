@@ -1,4 +1,5 @@
 import type { Project, ProjectCollection } from '../types/site';
+import { marketplaceLinks } from '../data/marketplace';
 
 interface CollectionPageProps {
   collection: ProjectCollection;
@@ -32,6 +33,7 @@ function ProjectCard({ project }: { project: Project }) {
   const href = projectTarget(project);
   const external = Boolean(href?.startsWith('http'));
   const linkProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+  const marketplace = marketplaceLinks[project.id];
   const visualStyle = project.cover
     ? { backgroundImage: `url("${project.cover}")` }
     : undefined;
@@ -51,13 +53,27 @@ function ProjectCard({ project }: { project: Project }) {
           <span className="state">{project.status}</span>
           {project.tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}
         </div>
-        {href ? (
-          <a className="project-open" href={href} {...linkProps}>
-            {project.wiki.length > 0 ? 'Open documentation' : project.links[0]?.label ?? 'View project'}
-          </a>
-        ) : (
-          <span className="project-open project-open-muted">Details soon</span>
-        )}
+
+        <div className="collection-project-actions">
+          {href ? (
+            <a className="project-open" href={href} {...linkProps}>
+              {project.wiki.length > 0 ? 'Open documentation' : project.links[0]?.label ?? 'View project'}
+            </a>
+          ) : (
+            <span className="project-open project-open-muted">Details soon</span>
+          )}
+
+          {marketplace && (
+            <a
+              className="project-open project-resource"
+              href={marketplace.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View resource on {marketplace.platform}
+            </a>
+          )}
+        </div>
       </div>
     </article>
   );
