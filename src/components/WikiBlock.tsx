@@ -22,7 +22,7 @@ function resolveMediaUrl(url: string) {
     return url;
   }
 
-  return `${import.meta.env.BASE_URL}${url.replace(/^\.\//, '')}`;
+  return new URL(url, document.baseURI).toString();
 }
 
 function isVideoFile(url: string) {
