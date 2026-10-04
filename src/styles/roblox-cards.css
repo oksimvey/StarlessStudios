@@ -24,9 +24,62 @@
   font-size: .86rem;
 }
 
+.collection-page-roblox .collection-project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 18px;
+}
+
 .collection-page-roblox .collection-project .project-open {
-  padding: 7px 11px;
-  font-size: .75rem;
+  min-height: 42px;
+  margin: 0;
+  padding: 10px 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--white);
+  font-size: .82rem;
+  font-weight: 500;
+  line-height: 1.1;
+  transition: background .18s, color .18s, border-color .18s, transform .18s;
+}
+
+/* The global card hover used to light up every CTA at once. Keep each
+   button neutral until that specific button is hovered/focused. */
+.collection-page-roblox .collection-project:hover .project-open {
+  background: transparent;
+  color: var(--white);
+  border-color: var(--line-2);
+}
+
+.collection-page-roblox .collection-project .project-open:hover,
+.collection-page-roblox .collection-project .project-open:focus-visible {
+  background: var(--white);
+  color: var(--ink);
+  border-color: var(--white);
+  transform: translateY(-1px);
+}
+
+.collection-page-roblox .collection-project .project-resource {
+  background: rgba(255, 255, 255, .045);
+  color: var(--grey);
+}
+
+.collection-page-roblox .collection-project:hover .project-resource {
+  background: rgba(255, 255, 255, .045);
+  color: var(--grey);
+  border-color: var(--line-2);
+}
+
+.collection-page-roblox .collection-project .project-resource:hover,
+.collection-page-roblox .collection-project .project-resource:focus-visible {
+  background: var(--white);
+  color: var(--ink);
+  border-color: var(--white);
 }
 
 @media (max-width: 900px) {
@@ -38,5 +91,10 @@
 @media (max-width: 620px) {
   .collection-page-roblox .collection-projects {
     grid-template-columns: 1fr;
+  }
+
+  .collection-page-roblox .collection-project .project-open {
+    min-height: 44px;
+    padding-inline: 16px;
   }
 }
