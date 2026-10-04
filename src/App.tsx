@@ -3,6 +3,7 @@ import { siteData } from './data';
 import Header from './components/Header';
 import Home from './components/Home';
 import Wiki from './components/Wiki';
+import CollectionPage from './components/CollectionPage';
 import Footer from './components/Footer';
 import GlobalDust from './graphics/GlobalDust';
 
@@ -15,12 +16,18 @@ function getHash() {
   return window.location.hash;
 }
 
-/** Keeps the original #/p/project-id links and native section anchors. */
 export default function App() {
   const hash = useSyncExternalStore(subscribeToHash, getHash, () => '#/');
-  const match = /^#\/p\/([\w-]+)(?:\/([\w-]+))?$/.exec(hash);
-  const project = match ? siteData.projects.find((item) => item.id === match[1]) : undefined;
-  const sectionId = project ? match?.[2] : undefined;
+  const projectMatch = /^#\/p\/([\w-]+)(?:\/([\w-]+))?$/.exec(hash);
+  const collectionMatch = /^#\/collection\/([\w-]+)$/.exec(hash);
+
+  const project = projectMatch
+    ? siteData.projects.find((item) => item.id === projectMatch[1])
+    : undefined;
+  const sectionId = project ? projectMatch?.[2] : undefined;
+  const collection = collectionMatch
+    ? siteData.collections.find((item) => item.id === collectionMatch[1])
+    : undefined;
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -36,13 +43,13 @@ export default function App() {
         return;
       }
 
+      if (collection) {
+        window.scrollTo(0, 0);
+        return;
+      }
+
       const anchor = hash.startsWith('#') ? hash.slice(1) : '';
-      const homeAnchors = new Set([
-        'work',
-        ...siteData.collections.map((collection) => collection.id),
-        'studio',
-        'elsewhere',
-      ]);
+      const homeAnchors = new Set(['work', 'studio', 'elsewhere']);
 
       if (homeAnchors.has(anchor)) {
         document.getElementById(anchor)?.scrollIntoView();
@@ -52,14 +59,24 @@ export default function App() {
     });
 
     return () => cancelAnimationFrame(frame);
-  }, [hash, project, sectionId]);
+  }, [hash, project, collection, sectionId]);
+
+  const collectionProjects = collection
+    ? siteData.projects.filter((item) => item.category === collection.id)
+    : [];
 
   return (
     <>
       <GlobalDust />
       <Header studio={siteData.studio} collections={siteData.collections} />
       <main>
-        {project ? <Wiki project={project} /> : <Home data={siteData} />}
+        {project ? (
+          <Wiki project={project} />
+        ) : collection ? (
+          <CollectionPage collection={collection} projects={collectionProjects} />
+        ) : (
+          <Home data={siteData} />
+        )}
       </main>
       <Footer studio={siteData.studio} />
     </>
