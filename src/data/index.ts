@@ -1,5 +1,14 @@
 import rawData from './site.json';
+import { uiforgingProject } from './uiforging';
 import type { SiteData } from '../types/site';
 
-// Site content is kept in one editable JSON file, as in the original HTML.
-export const siteData = rawData as unknown as SiteData;
+const baseData = rawData as unknown as SiteData;
+
+export const siteData: SiteData = {
+  ...baseData,
+  projects: baseData.projects.map((project) =>
+    project.id === 'uiforge' || project.id === 'uiforging'
+      ? uiforgingProject
+      : project,
+  ),
+};
