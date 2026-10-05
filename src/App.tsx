@@ -20,9 +20,11 @@ export default function App() {
   const hash = useSyncExternalStore(subscribeToHash, getHash, () => '#/');
   const projectMatch = /^#\/p\/([\w-]+)(?:\/([\w-]+))?$/.exec(hash);
   const collectionMatch = /^#\/collection\/([\w-]+)$/.exec(hash);
+  const requestedProjectId = projectMatch?.[1];
+  const projectId = requestedProjectId === 'uiforge' ? 'uiforging' : requestedProjectId;
 
-  const project = projectMatch
-    ? siteData.projects.find((item) => item.id === projectMatch[1])
+  const project = projectId
+    ? siteData.projects.find((item) => item.id === projectId)
     : undefined;
   const sectionId = project ? projectMatch?.[2] : undefined;
   const collection = collectionMatch
