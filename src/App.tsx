@@ -21,7 +21,7 @@ export default function App() {
   // Clean, crawlable URLs are preferred; previous hash URLs keep working.
   const base = import.meta.env.BASE_URL;
   const pathname = window.location.pathname.startsWith(base)
-    ? window.location.pathname.slice(base.length).replace(/\\/+$/, '')
+    ? window.location.pathname.slice(base.length).replace(/\/+$/, '')
     : '';
   const legacyProjectMatch = /^#\/p\/([\w-]+)(?:\/([\w-]+))?$/.exec(hash);
   const projectMatch = legacyProjectMatch ?? /^p\/([\w-]+)(?:\/([\w-]+))?$/.exec(pathname);
