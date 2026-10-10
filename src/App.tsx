@@ -18,15 +18,24 @@ function getHash() {
 
 export default function App() {
   const hash = useSyncExternalStore(subscribeToHash, getHash, () => '#/');
-  const projectMatch = /^#\/p\/([\w-]+)(?:\/([\w-]+))?$/.exec(hash);
-  const collectionMatch = /^#\/collection\/([\w-]+)$/.exec(hash);
+  // Clean, crawlable URLs are preferred; previous hash URLs keep working.
+  const base = import.meta.env.BASE_URL;
+  const pathname = window.location.pathname.startsWith(base)
+    ? window.location.pathname.slice(base.length).replace(/\\/+$/, '')
+    : '';
+  const legacyProjectMatch = /^#\/p\/([\w-]+)(?:\/([\w-]+))?$/.exec(hash);
+  const projectMatch = legacyProjectMatch ?? /^p\/([\w-]+)(?:\/([\w-]+))?$/.exec(pathname);
+  const collectionMatch = /^#\/collection\/([\w-]+)$/.exec(hash)
+    ?? /^collection\/([\w-]+)$/.exec(pathname);
   const requestedProjectId = projectMatch?.[1];
   const projectId = requestedProjectId === 'uiforge' ? 'uiforging' : requestedProjectId;
 
   const project = projectId
     ? siteData.projects.find((item) => item.id === projectId)
     : undefined;
-  const sectionId = project ? projectMatch?.[2] : undefined;
+  const sectionId = project
+    ? (projectMatch?.[2] ?? (!hash.startsWith('#/') ? hash.slice(1) : undefined))
+    : undefined;
   const collection = collectionMatch
     ? siteData.collections.find((item) => item.id === collectionMatch[1])
     : undefined;
