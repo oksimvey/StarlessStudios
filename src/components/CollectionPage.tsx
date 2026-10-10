@@ -25,7 +25,7 @@ const presentation: Record<string, { label: string; statement: string; visualLab
 };
 
 function projectTarget(project: Project) {
-  if (project.wiki.length > 0) return `#/p/${project.id}`;
+  if (project.wiki.length > 0) return `${import.meta.env.BASE_URL}p/${project.id}/`;
   return project.links[0]?.url ?? null;
 }
 
@@ -134,7 +134,7 @@ export default function CollectionPage({ collection, projects }: CollectionPageP
       <section className="collection-hero">
         <div className="shell collection-hero-grid">
           <div className="collection-hero-copy">
-            <a className="collection-back" href="#/">← Starless Studios</a>
+            <a className="collection-back" href={import.meta.env.BASE_URL}>← Starless Studios</a>
             <p className="section-kicker">{view.label}</p>
             <h1>{collection.title}</h1>
             <p className="collection-lead">{view.statement}</p>

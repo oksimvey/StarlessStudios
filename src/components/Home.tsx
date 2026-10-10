@@ -62,7 +62,7 @@ export default function Home({ data }: HomeProps) {
               const count = projects.filter((project) => project.category === collection.id).length;
 
               return (
-                <a className="collection-jump" href={`#/collection/${collection.id}`} key={collection.id}>
+                <a className="collection-jump" href={`${import.meta.env.BASE_URL}collection/${collection.id}/`} key={collection.id}>
                   <span className="collection-number">0{index + 1}</span>
                   <span className="collection-copy">
                     <small>{collection.eyebrow}</small>

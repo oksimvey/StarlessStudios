@@ -12,14 +12,14 @@ export default function Header({ studio, collections }: HeaderProps) {
   return (
     <header className="masthead">
       <div className="shell">
-        <a className="mark" href="#/" aria-label={`${studio.name}, home`}>
+        <a className="mark" href={import.meta.env.BASE_URL} aria-label={`${studio.name}, home`}>
           <StudioMark />
           Starless <i>Studios</i>
         </a>
 
         <nav className="nav" aria-label="Main navigation">
           {collections.map((collection) => (
-            <a href={`#/collection/${collection.id}`} key={collection.id}>
+            <a href={`${import.meta.env.BASE_URL}collection/${collection.id}/`} key={collection.id}>
               {collection.eyebrow}
             </a>
           ))}
@@ -30,7 +30,7 @@ export default function Header({ studio, collections }: HeaderProps) {
           <a href={youtube} target="_blank" rel="noopener noreferrer">YouTube</a>
         </nav>
 
-        <a className="cta" href="#/">
+        <a className="cta" href={import.meta.env.BASE_URL}>
           Work index
         </a>
       </div>

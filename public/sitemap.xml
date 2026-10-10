@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://oksimvey.github.io/StarlessStudios/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
+  <url><loc>https://oksimvey.github.io/StarlessStudios/</loc></url>
+  <url><loc>https://oksimvey.github.io/StarlessStudios/collection/websites/</loc></url>
+  <url><loc>https://oksimvey.github.io/StarlessStudios/collection/roblox/</loc></url>
+  <url><loc>https://oksimvey.github.io/StarlessStudios/collection/products/</loc></url>
+  <url><loc>https://oksimvey.github.io/StarlessStudios/p/camera-system/</loc></url>
+  <url><loc>https://oksimvey.github.io/StarlessStudios/p/uiforging/</loc></url>
 </urlset>

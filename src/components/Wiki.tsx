@@ -31,7 +31,7 @@ export default function Wiki({ project }: WikiProps) {
   return (
     <div className="wiki shell">
       <p className="crumb">
-        <a href="#/">Starless Studios</a>
+        <a href={import.meta.env.BASE_URL}>Starless Studios</a>
         {' / '}{project.name}
       </p>
       <h1 className="wiki-title">{project.name}</h1>
@@ -77,7 +77,7 @@ export default function Wiki({ project }: WikiProps) {
             {project.wiki.map((section) => (
               <li key={section.id}>
                 <a
-                  href={`#/p/${project.id}/${section.id}`}
+                  href={`${import.meta.env.BASE_URL}p/${project.id}/#${section.id}`}
                   className={activeSection === section.id ? 'on' : undefined}
                 >
                   {section.title}
