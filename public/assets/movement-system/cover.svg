@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-label="Movement System — Starless Studios">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#08090d"/><stop offset=".55" stop-color="#161a23"/><stop offset="1" stop-color="#07080a"/></linearGradient>
+<linearGradient id="line" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#e3e8ef" stop-opacity="0"/><stop offset=".45" stop-color="#e3e8ef" stop-opacity=".83"/><stop offset="1" stop-color="#e3e8ef" stop-opacity="0"/></linearGradient>
+<radialGradient id="glow"><stop stop-color="#8895ab" stop-opacity=".2"/><stop offset="1" stop-color="#8895ab" stop-opacity="0"/></radialGradient>
+<pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#b5c0cf" stroke-opacity=".065"/></pattern>
+</defs>
+<rect width="1200" height="720" fill="url(#bg)"/>
+<rect width="1200" height="720" fill="url(#grid)"/>
+<circle cx="860" cy="325" r="335" fill="url(#glow)"/>
+<g fill="none" stroke="#dae1ed" stroke-linecap="round">
+<path d="M320 575 C520 560 625 475 710 310 S892 139 1065 180" stroke-width="2.5" stroke-opacity=".61"/>
+<path d="M350 609 C560 578 674 510 753 340 S907 176 1073 217" stroke-width="1" stroke-opacity=".23"/>
+<path d="M360 532 C529 514 607 432 671 296 S830 112 1029 143" stroke-width="1" stroke-opacity=".25"/>
+<circle cx="733" cy="275" r="48" stroke-width="1" stroke-opacity=".38" stroke-dasharray="7 13"/>
+<circle cx="733" cy="275" r="9" fill="#f4f6f9" stroke="none"/>
+<path d="M676 275H580 M790 275H878 M733 218V151 M733 332V394" stroke-width="1" stroke-opacity=".27" stroke-dasharray="3 10"/>
+<path d="M760 252 L875 185 M768 299 L885 357" stroke-width="3" stroke="url(#line)"/>
+<path d="M527 526 L593 498 M553 555 L615 529 M578 584 L639 556" stroke-width="2" stroke-opacity=".22"/>
+</g>
+<g fill="#f4f5f7" font-family="Arial,Helvetica,sans-serif">
+<text x="68" y="86" font-size="21" letter-spacing="6" font-weight="700">STARLESS STUDIOS</text>
+<text x="68" y="402" font-size="75" letter-spacing="-4" font-weight="700">MOVEMENT</text>
+<text x="68" y="488" font-size="75" letter-spacing="-4" font-weight="700">SYSTEM</text>
+<text x="70" y="548" font-size="17" letter-spacing="5" opacity=".68">ROBLOX / CHARACTER CONTROLLER</text>
+<text x="70" y="661" font-size="14" letter-spacing="3" opacity=".48">R6  /  TRAVERSAL  /  PROCEDURAL ANIMATION</text>
+</g>
+<path d="M68 107H1132" stroke="#e2e7ed" stroke-opacity=".18"/>
+<path d="M68 616H1132" stroke="#e2e7ed" stroke-opacity=".18"/>
+</svg>
