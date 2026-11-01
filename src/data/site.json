@@ -594,6 +594,866 @@
       "category": "roblox"
     },
     {
+      "id": "movement-system",
+      "category": "roblox",
+      "name": "Movement System",
+      "status": "In development",
+      "tagline": "A modular, server-validated Roblox R6 movement framework with responsive traversal, stamina, procedural character animation, surface-aware effects, and configurable controls.",
+      "tags": [
+        "Roblox Studio",
+        "Luau",
+        "Traversal",
+        "R6",
+        "Animation"
+      ],
+      "cover": "assets/movement-system/cover.svg",
+      "updatedAt": "November 2026",
+      "links": [],
+      "wiki": [
+        {
+          "id": "overview",
+          "title": "Overview",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Movement System is a modular character-movement framework for Roblox Studio. It brings together directional locomotion, sprinting, stamina, directional dashes and ground rolls, sliding, vaulting, ledge climbing, wall running, swimming, narrow-surface balance, procedural R6 posing, and material-aware effects."
+            },
+            {
+              "type": "text",
+              "value": "It is built around one central configuration module and a two-script bootstrap. Movement requests are validated by the server while client controllers handle responsive inputs, presentation, and appropriate motion effects. Most features can be tuned or disabled independently."
+            },
+            {
+              "type": "note",
+              "title": "Current scope",
+              "value": "The default experience targets <strong>R6</strong>. Full R15 behavior, comprehensive mobile controls for every traversal action, and certain roadmap features are not yet complete. Read the platform support section before using it in a production game."
+            },
+            {
+              "type": "text",
+              "value": "Documentation reflects the current Movement-System repository configuration as of November 1, 2026. Values below are defaults, not fixed limits."
+            }
+          ]
+        },
+        {
+          "id": "installation",
+          "title": "Installation",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Import the full <code>MovementSystem</code> package into <code>ReplicatedStorage</code>. Its <code>Client</code> and <code>Server</code> subfolders, shared modules, configuration, animations and networking modules must remain together."
+            },
+            {
+              "type": "list",
+              "items": [
+                "Place <code>MovementSystem</code> directly under <code>ReplicatedStorage</code>.",
+                "Create one regular <code>Script</code> in <code>ServerScriptService</code>.",
+                "Create one <code>LocalScript</code> in <code>StarterPlayer &gt; StarterPlayerScripts</code>.",
+                "Paste the corresponding bootstrap code below and press Play."
+              ]
+            },
+            {
+              "type": "heading",
+              "value": "Server bootstrap"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "ServerScriptService/MovementSystemServerBootstrap.server.lua",
+              "value": "local ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\nlocal system = ReplicatedStorage:WaitForChild(\"MovementSystem\")\n\nrequire(system:WaitForChild(\"MovementSystemInitializer\")).initServer()"
+            },
+            {
+              "type": "heading",
+              "value": "Client bootstrap"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "StarterPlayer/StarterPlayerScripts/MovementSystemClientBootstrap.client.lua",
+              "value": "local ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\nlocal system = ReplicatedStorage:WaitForChild(\"MovementSystem\")\n\nrequire(system:WaitForChild(\"MovementSystemInitializer\")).initClient()"
+            },
+            {
+              "type": "note",
+              "title": "Important",
+              "value": "Use <strong>one</strong> server bootstrap and <strong>one</strong> client bootstrap. Remove previous Movement System installations before importing a new package, or duplicate controllers/remotes may conflict. The initializer handles subsequent character respawns."
+            },
+            {
+              "type": "text",
+              "value": "For source-based development, the repository includes a <code>default.project.json</code> Rojo mapping and automated deployment tooling. Manual installation does not require Rojo."
+            }
+          ]
+        },
+        {
+          "id": "controls",
+          "title": "Controls and input",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Default controls are defined by feature-specific tables in <code>Config.luau</code>. All keys can be customized in the source configuration. Mobile buttons currently cover common actions, but not every traversal mechanic."
+            },
+            {
+              "type": "heading",
+              "value": "Keyboard and mouse"
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Move</strong> — W/A/S/D using normal Roblox movement.",
+                "<strong>Jump / climb a held ledge</strong> — Space.",
+                "<strong>Sprint</strong> — Left Ctrl (toggle by default).",
+                "<strong>Crouch</strong> — hold C; pressing C while sprinting forward triggers slide.",
+                "<strong>Dash / ground roll</strong> — Q, with movement direction determining the action direction.",
+                "<strong>Vault</strong> — Space near a valid obstacle, or automatically while sprinting forward.",
+                "<strong>Ledge grab</strong> — hold right mouse button close to a reachable edge; A/D to shimmy.",
+                "<strong>Drop from ledge</strong> — release right mouse button or press Left Ctrl.",
+                "<strong>Wall jump</strong> — Space while wall running.",
+                "<strong>Swim up / down</strong> — Space / Left Alt while swimming."
+              ]
+            },
+            {
+              "type": "heading",
+              "value": "Gamepad and touch"
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Gamepad sprint</strong> — press L3.",
+                "<strong>Gamepad dash</strong> — B; <strong>crouch/slide</strong> — RB / R1.",
+                "<strong>Gamepad ledge grab</strong> — hold LT / L2; <strong>swim down</strong> — B; <strong>jump/swim up</strong> — A.",
+                "<strong>Mobile</strong> — touch controls are available for sprint, crouch/slide, dash and swimming descent."
+              ]
+            },
+            {
+              "type": "note",
+              "title": "Platform support",
+              "value": "Some inputs vary by action state. Ledge grab currently has no dedicated mobile grab button, and full mobile/gamepad traversal coverage is still being developed. Test bindings together with any external combat or camera system."
+            }
+          ]
+        },
+        {
+          "id": "core-movement",
+          "title": "Core locomotion",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "The framework supports directional walk/run animation selection, smoothed acceleration and stopping, directional intent, idle rotation, turning animations, and action-state restrictions."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<code>Config.Movement.WalkSpeed</code> — default <strong>12</strong> studs/s.",
+                "<code>Config.Sprint.Speed</code> — default <strong>26</strong> studs/s.",
+                "<code>Config.Movement.Acceleration</code> — per-state acceleration and idle deceleration.",
+                "<code>Config.Movement.Direction</code> — direction-specific movement multipliers and diagonal normalization.",
+                "<code>Config.Movement.Rotation</code> — character rotation and response speed.",
+                "<code>Config.DirectionalAnimations</code> — directional clip detection and blending."
+              ]
+            },
+            {
+              "type": "text",
+              "value": "The animation system also contains separate clips for forward, backward, left, and right movement. Turn-step animations react to actual character yaw rather than requiring camera rotation data."
+            }
+          ]
+        },
+        {
+          "id": "sprinting",
+          "title": "Sprinting and inertia",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Sprinting is a server-validated state with optional stamina consumption. It cannot begin while crouching, balancing, seated, or during certain action locks. The default activation mode is <code>Toggle</code>; <code>Hold</code> is supported, while <code>RepeatedTap</code> is not yet independently implemented."
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Sprint.Speed = 26\nConfig.Sprint.Mode = \"Toggle\" -- or \"Hold\"\nConfig.Sprint.Input.Desktop.Key = Enum.KeyCode.LeftControl\nConfig.Sprint.Input.Gamepad.Key = Enum.KeyCode.ButtonL3"
+            },
+            {
+              "type": "text",
+              "value": "Directional inertia is handled separately by <code>Client/InertiaController</code> and <code>InertiaConfig.luau</code>. Ground dash/roll direction changes have additional steering and exit-redirection tuning under <code>Config.Dash.Motion</code>."
+            }
+          ]
+        },
+        {
+          "id": "stamina",
+          "title": "Stamina and the HUD",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Stamina is shared between sprinting and traversal. The server controls authoritative values and replicates stamina to attributes for UI and effects."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<code>Config.Stamina.Max</code> / <code>StartValue</code> — <strong>200</strong>.",
+                "<code>Config.Stamina.Sprint.DrainPerSecond</code> — <strong>10</strong>.",
+                "<code>Config.Stamina.Jump.Cost</code> — <strong>15</strong>.",
+                "<code>Config.Stamina.Regeneration.PerSecond</code> — <strong>14</strong>, after a <strong>1-second</strong> delay.",
+                "<code>Config.Stamina.Swimming.DrainPerSecond</code> — <strong>8</strong> when actively swimming.",
+                "<code>Config.Stamina.UI.Style</code> — <code>Wheel</code> (default) or <code>Bar</code>."
+              ]
+            },
+            {
+              "type": "heading",
+              "value": "Change stamina and HUD settings"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Stamina.Max = 200\nConfig.Stamina.StartValue = 200\nConfig.Stamina.Regeneration.PerSecond = 14\nConfig.Stamina.UI.Enabled = true\nConfig.Stamina.UI.Style = \"Wheel\"\nConfig.Stamina.UI.Wheel.Diameter = 70\nConfig.Stamina.UI.Wheel.HideWhenFull = true"
+            },
+            {
+              "type": "text",
+              "value": "The wheel appears near the character when stamina is used and hides after recovery; its offset, size, colors and fade behavior are configurable. An infinite-stamina testing option exists, but the server restricts it using <code>AllowedUserIds</code> or explicit permissions. It is not enabled for all public players by default."
+            }
+          ]
+        },
+        {
+          "id": "dash-roll",
+          "title": "Dash and ground roll",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "The <code>Dash</code> feature provides an airborne directional dash and a physically distinct <strong>ground roll</strong>. You do not need to enable the separate, currently unused <code>Config.Roll</code> roadmap module for ground rolling."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Input</strong> — Q on keyboard, B on gamepad, DASH touch button.",
+                "<strong>Air dash</strong> — default peak speed <strong>35</strong> studs/s; duration <strong>0.58 s</strong>.",
+                "<strong>Ground roll</strong> — default peak speed <strong>28</strong> studs/s (<code>35 × 0.80</code>), physical duration <strong>1.08 s</strong>.",
+                "<strong>Air limit</strong> — one dash per airtime by default; refreshed on landing.",
+                "<strong>Stamina</strong> — <strong>15</strong> per dash.",
+                "<strong>Animation</strong> — full ground-roll clip with configurable crossfades into locomotion.",
+                "<strong>Motion</strong> — steer during the ground roll and blend away outdated sideways momentum when exiting.",
+                "<strong>Effects</strong> — ground roll uses surface dust; airborne dash can emit Lines and AirRift effects."
+              ]
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Dash.Speed = 35\nConfig.Dash.GroundSpeedMultiplier = 0.80\nConfig.Dash.GroundDuration = 1.08\nConfig.Dash.Air.MaxDashes = 1\nConfig.Dash.Stamina.Cost = 15\nConfig.Dash.Motion.GroundSteeringResponse = 10\nConfig.Dash.Motion.GroundExitRedirect = 0.8"
+            },
+            {
+              "type": "note",
+              "title": "Tuning",
+              "value": "The physical action duration and visual animation timing are separate. Adjust <code>Config.Dash.Motion</code> for steering/braking, and <code>Config.Dash.Animation</code> for fade and playback. Avoid shortening the animation unintentionally when tuning physical movement."
+            }
+          ]
+        },
+        {
+          "id": "crouch-slide",
+          "title": "Crouch and slide",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Hold C to crouch. While running forward on the ground, press C to start a server-approved slide instead. Releasing the key during the slide allows sprint to resume; holding it through the end transitions into crouch."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Crouch speed</strong> — <strong>8</strong> studs/s.",
+                "<strong>Slide start speed</strong> — <strong>28</strong> studs/s.",
+                "<strong>Minimum start speed</strong> — <strong>18</strong> studs/s.",
+                "<strong>Slide duration</strong> — <strong>1.0 s</strong>, with configurable friction and slope response.",
+                "<strong>Slide stamina cost</strong> — <strong>5</strong>; cooldown <strong>0.5 s</strong>.",
+                "<strong>R6 crouch pose</strong> — optional <code>RootJoint</code> visual offset; no manual root-physics lowering."
+              ]
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Crouch.Speed = 8\nConfig.Crouch.Input.Key = Enum.KeyCode.C\nConfig.Crouch.RootOffset.LowerStuds = 1.0\n\nConfig.Slide.Movement.InitialSpeed = 28\nConfig.Slide.Movement.Duration = 1.0\nConfig.Slide.Movement.Friction = 8\nConfig.Slide.Stamina.Cost = 5"
+            },
+            {
+              "type": "note",
+              "title": "Not yet implemented",
+              "value": "Automatic crouching beneath a low ceiling is a planned feature; <code>Config.Crouch.Adaptive.Enabled</code> is false by default."
+            }
+          ]
+        },
+        {
+          "id": "vault",
+          "title": "Vault traversal",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Vaulting allows players to cross suitable waist-height obstacles without conventional jumping. The client detects likely candidates, the server validates the wall geometry and landing clearance, and the client follows the approved trajectory."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Activation</strong> — automatically during forward sprint, or with Space while moving toward an obstacle.",
+                "<strong>Obstacle height</strong> — default <strong>2–4.5 studs</strong>.",
+                "<strong>Obstacle depth</strong> — default <strong>0.2–3.5 studs</strong>.",
+                "<strong>Detection</strong> — supports wall tops made of joined Parts, including separate caps.",
+                "<strong>Trajectory</strong> — eased climb, aligned rotation toward the wall, controlled forward crossing and gravity-driven release.",
+                "<strong>Cooldown</strong> — <strong>0.45 s</strong>; animations vary with obstacle geometry."
+              ]
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Vault.Enabled = true\nConfig.Vault.Activation.Automatic = true\nConfig.Vault.Detection.MinimumHeight = 2\nConfig.Vault.Detection.MaximumHeight = 4.5\nConfig.Vault.Detection.MaximumDepth = 3.5\nConfig.Vault.Motion.TraversalSpeedMultiplier = 1.5"
+            },
+            {
+              "type": "text",
+              "value": "A high or unreachable wall should remain a normal jump/ledge-grab candidate instead of being forcibly converted into a vault. If a vault is not triggered, check obstacle dimensions, forward input, collision geometry, and the client/server action state."
+            }
+          ]
+        },
+        {
+          "id": "ledge-grab",
+          "title": "Ledge grab, shimmy and climb",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Hold right mouse button (or LT/L2 on a gamepad) close to a reachable ledge to hang. While hanging, press A/D to traverse sideways, press Space to climb, or release the grab input / press Left Ctrl to drop."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Reach</strong> — default detection radius <strong>9 studs</strong>; maximum ledge height above the root <strong>9.5 studs</strong>.",
+                "<strong>Hanging position</strong> — root about <strong>2 studs below</strong> the ledge top, with a <strong>1-stud</strong> wall offset.",
+                "<strong>Shimmy speed</strong> — <strong>4</strong> studs/s; geometry is checked while moving.",
+                "<strong>Hand clearance</strong> — movement is blocked when nearby upper geometry obstructs the direction of the reaching arm.",
+                "<strong>Stamina</strong> — drains <strong>10 per second</strong> while hanging by default; exhaustion automatically releases the ledge.",
+                "<strong>Climb</strong> — server-validated climb path and destination with blended R6 arm posing."
+              ]
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.LedgeGrab.Detection.Distance = 9\nConfig.LedgeGrab.Detection.MaximumGrabHeight = 9.5\nConfig.LedgeGrab.Movement.RootBelowTop = 2.0\nConfig.LedgeGrab.Movement.ShimmySpeed = 4\n\nConfig.LedgeGrab.Hold.DrainStamina = true\nConfig.LedgeGrab.Hold.StaminaDrainPerSecond = 10"
+            },
+            {
+              "type": "note",
+              "title": "Control note",
+              "value": "Ledge grab can start from the ground when a ledge is within reach, because <code>RequireAirborne</code> is false by default. A dedicated touch-grab control is still part of the mobile-controls roadmap."
+            }
+          ]
+        },
+        {
+          "id": "wall-running",
+          "title": "Wall running and wall jump",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Wall running engages automatically near a valid side wall while airborne and moving. The character follows the wall with a stable wall-relative orientation; pressing Space triggers a wall jump away from the surface."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Minimum approach speed</strong> — <strong>4</strong> studs/s.",
+                "<strong>Wall detection</strong> — approximately <strong>3 studs</strong> from the character.",
+                "<strong>Travel speed</strong> — <strong>24</strong> studs/s with controlled descent at <strong>7</strong> studs/s.",
+                "<strong>Stamina</strong> — requires at least <strong>5</strong> to enter and drains <strong>12/s</strong>.",
+                "<strong>Wall jump</strong> — configurable outward, forward and upward impulses.",
+                "<strong>Cooldown</strong> — <strong>0.15 s</strong>; camera tilt and VFX can be configured."
+              ]
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.WallRun.Activation.Automatic = true\nConfig.WallRun.Activation.MinimumSpeed = 4\nConfig.WallRun.Movement.Speed = 24\nConfig.WallRun.Movement.DescentSpeed = 7\nConfig.WallRun.Jump.UpwardSpeed = 70\nConfig.WallRun.Stamina.DrainPerSecond = 12"
+            },
+            {
+              "type": "text",
+              "value": "Wall-run movement uses constrained vertical speed, rather than simply scaling Roblox gravity. The retained <code>Config.WallRun.Gravity</code> table is a compatibility setting, not the current primary vertical-motion implementation."
+            }
+          ]
+        },
+        {
+          "id": "swimming",
+          "title": "Swimming and water interaction",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Swimming uses Roblox's native <strong>Terrain Water</strong> and Humanoid swimming state. The package does not generate a demonstration lake, alter terrain, or replace native water physics."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Swim</strong> — native movement with configurable surface and underwater poses.",
+                "<strong>Ascend</strong> — Space / gamepad A; <strong>descend</strong> — Left Alt / gamepad B / DIVE touch button.",
+                "<strong>Stamina</strong> — <strong>8 per second</strong> during active swimming; exhaustion limits swim control until recovery.",
+                "<strong>Surface splash</strong> — VFX follows physical R6 arm/water contact, alternating arms with cooldown rather than a fixed rhythm.",
+                "<strong>Entry impact</strong> — a separate water-entry splash for real downward contact.",
+                "<strong>Sound</strong> — default continuous swimming loop is muted; arm stroke splashes are visual-only."
+              ]
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Swimming.Enabled = true\nConfig.Swimming.Input.DescendKey = Enum.KeyCode.LeftAlt\nConfig.Swimming.Effects.ArmContact.StrokeCooldown = 0.18\nConfig.Swimming.Effects.MuteNativeSwimmingLoop = true\nConfig.Stamina.Swimming.DrainPerSecond = 8"
+            },
+            {
+              "type": "note",
+              "title": "Testing",
+              "value": "Create <strong>Terrain Water</strong> in Roblox Studio and test with an R6 avatar. Regular Parts colored blue are not treated as swimmable water."
+            }
+          ]
+        },
+        {
+          "id": "balance",
+          "title": "Narrow-surface balance",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "When the player walks onto sufficiently narrow geometry, balance detection samples real nearby support and can temporarily restrict sprint. Local balance posing gradually extends arms while movement continues."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<code>Config.Balance</code> — narrow-surface checks, drop detection, animation blend and sprint restrictions.",
+                "<code>Config.BalanceMovement</code> — reconstructs the local path centerline and tangent, including curved or slightly discontinuous paths.",
+                "<strong>Tracked movement</strong> — adjusts <code>Humanoid:MoveTo()</code> direction toward the sampled route, instead of anchoring the character.",
+                "<strong>Exit</strong> — clearly sideways movement returns control to normal movement."
+              ]
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Balance.Enabled = true\nConfig.Balance.BlockSprint = true\nConfig.BalanceMovement.Enabled = true\nConfig.BalanceMovement.CenteringGain = 2.75\nConfig.BalanceMovement.PathSampleInterval = 0.05"
+            }
+          ]
+        },
+        {
+          "id": "animations",
+          "title": "Animation system",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "The package includes a centralized <code>DefaultAnimations.luau</code> catalog and server-side character animation handling. It preloads animation assets asynchronously and disables the character's default Roblox <code>Animate</code> LocalScript to prevent two locomotion animators competing."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Locomotion</strong> — idle, directional walking/running, turn-step, jump, falling and landing.",
+                "<strong>Traversal</strong> — crouch, slide, dash/roll, wall run, vault, ledge hang and climb.",
+                "<strong>Swimming</strong> — surface and underwater sequences with separate posing and blending.",
+                "<strong>Playback</strong> — adjustable fades, track speed and state-driven transitions."
+              ]
+            },
+            {
+              "type": "heading",
+              "value": "Replacing an animation"
+            },
+            {
+              "type": "text",
+              "value": "Edit the corresponding entry in <code>MovementSystem/DefaultAnimations.luau</code> before running the game. The following shows the same constructor used by that module:"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/DefaultAnimations.luau",
+              "value": "-- Example: replace the directional forward-run clip.\nRunForward = ActionAnimation.new(\n    \"rbxassetid://YOUR_ANIMATION_ID\",\n    0.75, -- playback multiplier\n    0.35, -- fade time\n    true, -- looped\n    {}\n),"
+            },
+            {
+              "type": "note",
+              "title": "Compatibility",
+              "value": "Animation assets must be available to the experience and authored for the intended rig. <strong>R6 is the currently configured target.</strong> A config flag alone does not provide full R15 equivalents."
+            }
+          ]
+        },
+        {
+          "id": "footsteps",
+          "title": "Procedural footsteps and surface audio",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Footstep playback is tied to detected foot contacts, not a fixed looping timer. The client samples animated R6 legs (or R15 feet where supported), determines the actual surface under the contacting foot, and plays a spatial, single-impact sound."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Material mapping</strong> — grass, concrete, wood, metal, fabric, wet surfaces and sand profiles.",
+                "<strong>Overrides</strong> — surface <code>FootstepProfile</code> Attributes or <code>FootstepProfile_*</code> CollectionService tags.",
+                "<strong>Turn steps</strong> — contact-driven sounds with an angular fallback for certain turn animations.",
+                "<strong>Audio behavior</strong> — one-shot trimming, contact cooldowns, volume multipliers and spatial distance limits.",
+                "<strong>Landing</strong> — a separate real-airborne-cycle landing impact, with a louder high-drop option.",
+                "<strong>Configuration</strong> — <code>FootstepConfig.luau</code> and <code>Config.Footsteps</code>."
+              ]
+            },
+            {
+              "type": "heading",
+              "value": "Override a surface's sound"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "Any server Script, after the Part exists",
+              "value": "-- Mark a metal walkway to use the Metal sound profile.\nlocal walkway = workspace:WaitForChild(\"MetalWalkway\")\nwalkway:SetAttribute(\"FootstepProfile\", \"Metal\")"
+            },
+            {
+              "type": "text",
+              "value": "The controller resolves explicit overrides first, then physical material and the default profile. The default Roblox running, jumping and landing sounds can be muted to avoid duplicate impacts."
+            },
+            {
+              "type": "note",
+              "title": "Asset note",
+              "value": "Configured Creator Store samples are trimmed to short impact windows by the runtime. Always verify sound permissions and timing in your own experience."
+            }
+          ]
+        },
+        {
+          "id": "dust-footprints",
+          "title": "Dust, footprints and landing effects",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Material-aware dust and footprints react to accepted physical foot contacts. Grounded movement produces brief contact bursts; dash and landing events have their own one-shot effect profiles."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>Dust materials</strong> — Ground, Sand, Snow and Mud by default; no procedural dust on concrete or metal.",
+                "<strong>Step dust</strong> — burst intensity scales with speed, while event timing comes from actual foot plants.",
+                "<strong>Dash dust</strong> — separate burst size and particle count.",
+                "<strong>Landing dust</strong> — larger burst for genuine ground contact after an airborne cycle.",
+                "<strong>Footprints</strong> — flat surface marks with a default <strong>5-second</strong> lifetime and <strong>1.6-second</strong> fade.",
+                "<strong>Files</strong> — <code>DustConfig.luau</code> and <code>FootprintConfig.luau</code>."
+              ]
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/DustConfig.luau + FootprintConfig.luau",
+              "value": "-- DustConfig.luau\nDustConfig.Step.SizeMultiplier = 2.325\nDustConfig.Landing.SizeMultiplier = 3.0\n\n-- FootprintConfig.luau (separate file)\nFootprintConfig.Lifetime = 5\nFootprintConfig.FadeTime = 1.6"
+            },
+            {
+              "type": "text",
+              "value": "High falls can also have their own fall/landing animation and impact audio. The separate <code>HardLanding</code> roadmap feature toggle is disabled by default; it should not be confused with normal landing dust and sound."
+            }
+          ]
+        },
+        {
+          "id": "sound-effects",
+          "title": "Movement sound effects",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Dedicated action SFX live under <code>Config.ActionSounds</code>. Footstep and landing sounds are configured independently in <code>FootstepConfig.luau</code>. Sounds must be permitted for the Roblox experience."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<code>ActionSounds.Jump</code> — standard jump and wall-jump sound.",
+                "<code>ActionSounds.AirForwardDash</code> — airborne forward dash effect.",
+                "<code>ActionSounds.Dash</code> — other dash/roll actions; reused where applicable.",
+                "<code>FootstepConfig.Events.Step.VolumeMultiplier</code> — step loudness.",
+                "<code>FootstepConfig.Events.Land.VolumeMultiplier</code> — landing loudness and high-drop multiplier."
+              ]
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.ActionSounds.Enabled = true\nConfig.ActionSounds.Jump.Volume = 0.35\nConfig.ActionSounds.AirForwardDash.Volume = 0.85\nConfig.ActionSounds.Dash.Volume = 0.80"
+            }
+          ]
+        },
+        {
+          "id": "procedural-r6",
+          "title": "Procedural R6 animation layers",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Procedural animation adds small, reactive offsets over authored clips rather than replacing the primary animation controller."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>R6 Leg IK</strong> — independently samples both legs and adjusts contact on uneven ground; includes planted and moving-foot logic.",
+                "<strong>Body avoidance</strong> — checks nearby obstacles and applies restrained head/torso reactions without unnecessary large lean.",
+                "<strong>Balance pose</strong> — adjusts shoulders and head as narrow-surface movement increases.",
+                "<strong>Ledge pose</strong> — aligns arms with the ledge and animates alternating shimmy reaches.",
+                "<strong>Swimming pose</strong> — surface and underwater alignment with smooth orientation changes.",
+                "<strong>Performance</strong> — distance and update-rate controls for remote-character procedural presentation."
+              ]
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.R6LegIK.Enabled = true\nConfig.R6LegIK.LeftLeg = true\nConfig.R6LegIK.RightLeg = true\nConfig.R6LegIK.OnlyWhileIdle = false\n\nConfig.R6BodyAvoidance.Enabled = true\nConfig.R6BodyAvoidance.TorsoRoll = 0\nConfig.R6BodyAvoidance.TorsoPitch = 0"
+            }
+          ]
+        },
+        {
+          "id": "configuration",
+          "title": "Configuration reference",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "The public settings are defined in <code>ReplicatedStorage/MovementSystem/Config.luau</code>. Supporting profiles are separated into dedicated modules for inertia, footsteps, dust and footprints. Change source values before runtime: the returned configuration tables are recursively frozen."
+            },
+            {
+              "type": "heading",
+              "value": "Feature flags"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Enabled = true\n\nConfig.Features.Dash = true\nConfig.Features.Slide = true\nConfig.Features.Vault = true\nConfig.Features.LedgeGrab = true\nConfig.Features.WallRun = true\nConfig.Features.Balance = true\nConfig.Features.R6LegIK = true\nConfig.Features.Footsteps = true\n\n-- Disable an individual feature:\nConfig.Features.Vault = false"
+            },
+            {
+              "type": "text",
+              "value": "Both a global <code>Config.Features.FeatureName</code> flag and a feature table's <code>Enabled</code> flag may be checked. These values are evaluated at controller initialization; restarting the character or package may be required for changes to take effect."
+            },
+            {
+              "type": "heading",
+              "value": "Main configuration groups"
+            },
+            {
+              "type": "list",
+              "items": [
+                "<code>Movement</code>, <code>Sprint</code>, <code>Stamina</code> — speeds, control, stamina and UI.",
+                "<code>Dash</code>, <code>Slide</code>, <code>Vault</code>, <code>LedgeGrab</code>, <code>WallRun</code> — traversal tuning.",
+                "<code>Swimming</code>, <code>Balance</code>, <code>BalanceMovement</code> — environment-specific movement.",
+                "<code>Animations</code>, <code>DirectionalAnimations</code>, <code>R6LegIK</code>, <code>R6BodyAvoidance</code> — motion and procedural presentation.",
+                "<code>Footsteps</code>, <code>ActionSounds</code>, <code>Performance</code>, <code>Debug</code> — effects, optimization and diagnostics."
+              ]
+            },
+            {
+              "type": "note",
+              "title": "Compatibility",
+              "value": "Older aliases such as <code>Config.WalkSpeed</code> and <code>Config.SprintSpeed</code> exist, but new integrations should use the grouped settings."
+            }
+          ]
+        },
+        {
+          "id": "access-rules",
+          "title": "Access rules and dynamic values",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Each supported feature can have Attribute requirements, blocked Attributes, a <code>CanStart</code> resolver and a <code>CanContinue</code> resolver. Author the integration in <code>Config.luau</code>; do not try to mutate the frozen required table at runtime."
+            },
+            {
+              "type": "heading",
+              "value": "Unlock wall running with a player Attribute"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.WallRun.Access.RequiredPlayerAttributes = {\n    HasWallRun = true,\n}"
+            },
+            {
+              "type": "text",
+              "value": "Set the corresponding Attribute on the player through a <strong>trusted server script</strong> when the ability is unlocked."
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "ServerScriptService/SkillUnlock.server.lua",
+              "value": "-- Example only: run after your own trusted unlock validation.\nplayer:SetAttribute(\"HasWallRun\", true)"
+            },
+            {
+              "type": "heading",
+              "value": "Block sprinting while stunned"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Sprint.Access.CanStart = function(context)\n    if context.Character:GetAttribute(\"Stunned\") == true then\n        return false, \"Stunned\"\n    end\n    return true\nend"
+            },
+            {
+              "type": "heading",
+              "value": "Dynamic sprint speed"
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Sprint.Speed = function(context)\n    local level = context.Player\n        and context.Player:GetAttribute(\"SprintLevel\")\n        or 0\n\n    return 26 + level * 2\nend"
+            },
+            {
+              "type": "text",
+              "value": "Context includes <code>Player</code>, <code>Character</code>, <code>Humanoid</code>, <code>RootPart</code>, <code>Speed</code>, <code>IsServer</code>, <code>Feature</code> and other movement data. Authoritative features enforce permission checks on the server; client-only checks are not a security boundary."
+            }
+          ]
+        },
+        {
+          "id": "callbacks",
+          "title": "Callbacks and integrations",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Feature lifecycle callbacks are declared in <code>Config.*.Callbacks</code>; global action hooks are in <code>Config.Callbacks</code>. They are useful for UI, statistics, combat rules and custom effects."
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "MovementSystem/Config.luau",
+              "value": "Config.Sprint.Callbacks.OnStart = function(context)\n    print(\"Sprint started:\", context.Player)\nend\n\nConfig.Sprint.Callbacks.OnBlocked = function(context, reason)\n    warn(\"Sprint blocked:\", reason)\nend\n\nConfig.Callbacks.OnActionStarted = function(feature, context)\n    print(\"Movement action:\", feature, context.Character)\nend"
+            },
+            {
+              "type": "text",
+              "value": "Available feature lifecycle hooks include <code>OnAttempt</code>, <code>OnStart</code>, <code>OnUpdate</code>, <code>OnStop</code>, <code>OnBlocked</code> and cooldown notifications where the controller emits them. There are also integration tables for camera, combat, status, skills and UI."
+            },
+            {
+              "type": "note",
+              "title": "Integration guidance",
+              "value": "The system can initialize a compatible <code>ReplicatedStorage.CameraSystem.CameraInitializer</code> automatically. When integrating your own combat system, coordinate action ownership and controls instead of adding a second movement controller for the same action."
+            }
+          ]
+        },
+        {
+          "id": "networking",
+          "title": "Networking and state Attributes",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Movement requests are checked on the server, and relevant state is replicated with Attributes. This allows a HUD, ability system or NPC logic to read movement state without depending on every internal controller."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<code>MovementSprinting</code> — whether sprint is active.",
+                "<code>MovementCrouching</code> — crouch state.",
+                "<code>MovementBalancing</code> — balance state.",
+                "<code>MovementAction</code> — current traversal/action state.",
+                "<code>MovementStamina</code> / <code>MovementMaxStamina</code> — replicated stamina values.",
+                "<code>MovementAirDashesUsed</code> — number of air dashes spent in the current airborne period.",
+                "<code>MovementSwimExhausted</code> — swimming exhaustion state.",
+                "<code>MovementInfiniteStamina</code> / <code>MovementInfiniteStaminaAllowed</code> — permission-gated testing state."
+              ]
+            },
+            {
+              "type": "text",
+              "value": "Attributes may belong to the <code>Player</code> or <code>Character</code>, depending on the feature. Refer to <code>Config.Character.Attributes</code>, <code>Config.Networking.StateAttributes</code> and the individual controller before consuming one in a different system."
+            },
+            {
+              "type": "code",
+              "lang": "lua",
+              "file": "Any LocalScript",
+              "value": "local player = game:GetService(\"Players\").LocalPlayer\n\nlocal function onSprintChanged()\n    local isSprinting = player:GetAttribute(\"MovementSprinting\") == true\n    print(\"Sprinting:\", isSprinting)\nend\n\nplayer:GetAttributeChangedSignal(\"MovementSprinting\"):Connect(onSprintChanged)\nonSprintChanged()"
+            },
+            {
+              "type": "note",
+              "title": "Security",
+              "value": "Keep critical gameplay authorization and private information in server-only code. The reusable movement package is stored in <code>ReplicatedStorage</code>, which clients can read."
+            }
+          ]
+        },
+        {
+          "id": "performance",
+          "title": "Performance and architecture",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "Server-side modules validate shared movement states, while local controllers handle inputs, interpolation, animation layers and visually responsive effects. Only the two small bootstrap scripts live outside the <code>MovementSystem</code> folder."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<code>MovementSystemInitializer</code> — one-time server/client entry points and character setup.",
+                "<code>Server/MovementService</code> — core sprint, stamina, crouch and state management.",
+                "<code>Server/DashService</code>, <code>SlideService</code>, <code>VaultService</code>, <code>WallRunService</code>, <code>LedgeService</code> — action validation.",
+                "<code>Server/CharacterAnimationService</code> and <code>Server/Animation</code> — shared animation handling.",
+                "<code>Client/*Controller</code> — input, local traversal, procedural poses, surface contacts and VFX.",
+                "<code>Network.luau</code> and <code>ConfigRuntime.luau</code> — remotes, config resolution, permission checks and callback dispatch."
+              ]
+            },
+            {
+              "type": "text",
+              "value": "Optimization settings include distance-limited remote procedural animation, sampled foot contact, update intervals, pooled surface audio and configurable effect lifetimes. Adjust <code>Config.Performance</code> and the dedicated effect configs after profiling your own place."
+            }
+          ]
+        },
+        {
+          "id": "troubleshooting",
+          "title": "Troubleshooting",
+          "blocks": [
+            {
+              "type": "heading",
+              "value": "Nothing happens when I press an action key"
+            },
+            {
+              "type": "text",
+              "value": "Check that both bootstrap scripts are running, the package is under <code>ReplicatedStorage</code>, the corresponding feature is enabled, and another action has not locked movement. Check Output for <code>[MovementSystem]</code> warnings."
+            },
+            {
+              "type": "heading",
+              "value": "Animations do not play or characters appear frozen"
+            },
+            {
+              "type": "text",
+              "value": "Confirm the avatar uses R6, verify animation asset permissions, and remove duplicate copies of the system or competing animation controllers. The initializer disables the default <code>Animate</code> script on purpose."
+            },
+            {
+              "type": "heading",
+              "value": "Vault or ledge grab does not detect a wall"
+            },
+            {
+              "type": "text",
+              "value": "Verify the geometry is collidable and reachable, check wall dimensions and clearance, and make sure sprint/vault and ledge control modes are not competing. Test with simple anchored Parts before complex meshes."
+            },
+            {
+              "type": "heading",
+              "value": "I hear two footsteps or the wrong surface"
+            },
+            {
+              "type": "text",
+              "value": "Check for another footstep script, confirm default Roblox contact sounds are muted, then review <code>FootstepConfig.Contact</code>, <code>Events.Step.MaxPlayTime</code> and any <code>FootstepProfile</code> override."
+            },
+            {
+              "type": "heading",
+              "value": "There is no ground dust or swimming splash"
+            },
+            {
+              "type": "text",
+              "value": "Dust is only emitted for configured loose materials such as Ground, Sand, Snow and Mud. Swimming effects require real Roblox Terrain Water and qualifying physical contact; blue Parts and fully submerged arm strokes are not equivalent."
+            },
+            {
+              "type": "heading",
+              "value": "My mobile action does not appear"
+            },
+            {
+              "type": "text",
+              "value": "Verify that the feature's mobile input is enabled and has <code>CreateTouchButton = true</code> when supported. Some traversal features still lack dedicated touch input."
+            }
+          ]
+        },
+        {
+          "id": "limitations",
+          "title": "Compatibility and planned features",
+          "blocks": [
+            {
+              "type": "text",
+              "value": "The current public documentation describes the modules that exist in the current source, not every unfinished item in older roadmap checklists."
+            },
+            {
+              "type": "list",
+              "items": [
+                "<strong>R6</strong> — primary supported rig and target for procedural arm/leg systems.",
+                "<strong>R15</strong> — the complete rig-specific animation/procedural implementation is not yet enabled by default.",
+                "<strong>Mobile</strong> — sprint, crouch/slide, dash and swim-down controls exist; complete traversal button support is still in progress.",
+                "<strong>Roadmap feature tables</strong> — the separate <code>Roll</code>, <code>Dive</code>, <code>HardLanding</code> and <code>HardBrake</code> modules are disabled, even though ground rolling is already provided by Dash.",
+                "<strong>Automatic low-clearance crouch</strong> — not yet implemented.",
+                "<strong>Custom animation assets</strong> — must match the intended rig and be accessible to the experience."
+              ]
+            },
+            {
+              "type": "text",
+              "value": "This page is structured as independent wiki sections so the documentation can evolve as features, configuration, controls and platform support change."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "uiforge",
       "name": "UIForge",
       "status": "In progress",
