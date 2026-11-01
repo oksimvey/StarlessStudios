@@ -34,8 +34,13 @@ function ProjectCard({ project }: { project: Project }) {
   const external = Boolean(href?.startsWith('http'));
   const linkProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
   const marketplace = marketplaceLinks[project.id];
-  const visualStyle = project.cover
-    ? { backgroundImage: `url("${project.cover}")` }
+  const coverUrl = project.cover
+    ? (/^(?:https?:)?\/\//i.test(project.cover) || project.cover.startsWith('/')
+      ? project.cover
+      : `${import.meta.env.BASE_URL}${project.cover.replace(/^\.\//, '')}`)
+    : null;
+  const visualStyle = coverUrl
+    ? { backgroundImage: `url("${coverUrl}")` }
     : undefined;
 
   return (
